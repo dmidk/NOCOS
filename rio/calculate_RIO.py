@@ -5,6 +5,8 @@
 """
 from read_config import read_configfile
 from read_ice_data import read_ice_data
+from save_RIO_toNetCDF import save_toNetcdf
+
 configs=read_configfile()
 icedata=read_ice_data(configs)
 
@@ -290,7 +292,9 @@ for jt in range(icedata[configs['coordinates']['time_name']].shape[0]):
         riofinal[jt,shipclassnr,:,:]=riotoplot
             
 
-
+# Save to netcdf
+#######################
+save_toNetcdf(riofinal,icedata,configs)
 ################################################
 ################################################
 #

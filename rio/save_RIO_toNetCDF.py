@@ -1,94 +1,43 @@
-# -*- coding: utf-8 -*-
-"""
 
+def save_toNetcdf(riodata,icedata,configs):
 
-@author: gierisch
-"""
-
-import sys
-
-def main(filename):
-
- 
+    import xarray as xr
+    import datetime
+    import os
     
-    ##############################
-    # Save RIO to netCDF file
-    ##############################
+    shipclasses = configs['output']['shipclasses']
     
-    if savedata:
-          
-        datatosave=np.ma.filled(riofinal)[:]   
-          
-        # Read en existing NetCDF data file and create a new one
-        # f is the existing NetCDF file and g is the new file.
-        ###########################################################
-        
-        f=Dataset(filename,'r') # r is for read only
-        g=Dataset('RIO_'+filename,'w') # if the file exists it the file will be deleted to write on it
-        
-        # Set global attributes
-        setattr(g,'Conventions',"CF-1.5")
-        setattr(g,'histroy',"made by transform_to_RIOsalinity.py")
-        setattr(g,'name','RIO_'+filename)
-        setattr(g,'description',"POLARIS RIO calculated from global NEMO-LIM3 model, salinity threshold for MY ice: 5 ppt")
-        setattr(g,'title',"POLARIS RIO")
-        setattr(g,'institution',"Finnish Meteorological Institute")
-        setattr(g,'references',"http://www.nautinst.org/filemanager/root/site_assets/forums/ice/msc.1-circ.1519_-_guidance_on_methodologies_for_assessing_operational_capabilities_and_limitations_in_ice_secretariat_1_.pdf")
-    
-        # Create new dimensions (number of ship classes)
-        g.createDimension('ship', len(shipclasses))
-        
-        # copy the old dimension of the netCDF file
-        print('Looping through dimensions:')
-        for dimname,dim in f.dimensions.iteritems():
-            print dimname
-            if not(dimname in ['ncatice']): # We don't want to create dimensions ncatice and nb2
-                if dim.isunlimited():
-                    g.createDimension(dimname,None)
-                else:
-                    g.createDimension(dimname,dim.__len__())
-        
-        # copy the variables
-        print()
-        print('Looping through variables:')
-        for varname,ncvar in f.variables.iteritems():
-            vardim=len(ncvar.dimensions)
-            # Template for RIO
-            if varname=='siconcat':
-                varfillvalue = None
-                if '_FillValue' in ncvar.ncattrs():
-                    varfillvalue=getattr(ncvar,'_FillValue')
-                newvar = g.createVariable('RIO','float', ('time_counter','ship','y','x'), zlib=True, fill_value=varfillvalue)
-                # set RIO attributes
-                for attname in ncvar.ncattrs():  
-                    setattr(newvar,'long_name','Risk Index Outcome calculated from NEMO')
-                    setattr(newvar,'units','RIO')
-                    setattr(newvar,'coordinates','nav_lon nav_lat')
-                    setattr(newvar,'missing_value',1.e+20)
-                    setattr(newvar,'comment',"Order of ship classes given in levels: "+', '.join(shipclasses))
-                # Write the data
-                newvar[:] = datatosave[:]  
-            # Copy all other relevant variables
-            if varname in ['time_counter_bnds','time_counter','nav_lon','nav_lat']:
-                data=ncvar[:]
-                copyvar = g.createVariable(varname,ncvar.dtype, ncvar.dimensions)
-                # copy the variable attributes
-                for attname in ncvar.ncattrs(): 
-                    setattr(copyvar,attname,getattr(ncvar,attname)) # Attribute _FillValue has been set already when creating the variable record.
-                # copy the variable data
-                copyvar[:] = data[:]                
-    
-        f.close()
-        g.close()
-
-
-###############################################
-###############################################
-
-if __name__ == "__main__":
-#    main('eO025L7501_1979-2015.nc')
-    if len(sys.argv)!=2:
-        raise RuntimeError('You need to provide a nc-file with the NEMO model output from which RIO should be calculated.')
+    if configs['output']['filename_automatic']==True:
+        outfile=configs['output']['output_folder']+'/RIO_'+os.path.basename(configs['ice_filename']).replace('*','XXX').replace('?','X')
     else:
-        main(sys.argv[1])
-
+        outfile=configs['output']['output_folder']+'/'+configs['output']['filename']
+    
+    timespace_coords=[configs["coordinates"]["lon_name"], configs["coordinates"]["lat_name"], configs["coordinates"]["time_name"]]
+    #riods=icedata[["time","TLAT","TLON"]] # Create an "empty" DataSet with same time and space dimentions as in icedata
+    riods=icedata[timespace_coords] # Create an "empty" DataSet with same time and space dimentions as in icedata
+    #rio_dims = icedata.siitdconc.dims # e.g. ('time', 'nc', 'nj', 'ni')
+    rio_dims = (icedata.siitdconc.dims[0],'shipclass',icedata.siitdconc.dims[2],icedata.siitdconc.dims[3])
+    
+    riods.coords["shipclass"] =  shipclasses
+    #riods.coords["shipclass"] =  np.array(shipclasses, dtype='S') # Tried as string to help ncview to read shipclass names. Doesn't help.
+    
+    
+    #rio_coords=configs["coordinates"]["lon_name"] +' '+ configs["coordinates"]["lat_name"] +' shipclass '+ configs["coordinates"]["time_name"]
+    #riods["RIO"] = (rio_dims, riofinal, {'coordinates':rio_coords})
+    riods["RIO"] = (rio_dims, riodata)
+    rio_attrs={'long_name':'Risk Index Outcome (POLARIS)',
+                'units':'[]',
+                'comment':"Ship classes given in levels: "+', '.join(shipclasses)
+                }
+    riods.RIO.attrs=rio_attrs
+    #riods.RIO.encoding["coordinates"]=rio_coords
+    
+    riods.attrs={
+    'title':configs['output']['title'],
+    'histroy':'Created by .....py on '+datetime.datetime.today().strftime("%Y-%m-%d"),
+    'description':'Used RIO calculation method: '+[i for i in configs['RIOmethod'] if configs['RIOmethod'][i]==True][0]+'; number of ice categories: '+str(configs['coordinates']['ncat']),
+    'institution':"Finnish and Danish Meteorological Institutes, FMI/DMI",
+    'references':'https://www.nautinst.org/uploads/assets/uploaded/2f01665c-04f7-4488-802552e5b5db62d9.pdf'
+    }
+    
+    riods.to_netcdf(outfile, unlimited_dims=configs["coordinates"]["time_name"], encoding={'time':{"dtype": "double", 'units': "days since 1900-01-01 00:00:00"}})

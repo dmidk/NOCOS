@@ -55,6 +55,11 @@ def read_configfile():
         
 # e) Check if ship classes make sense 
     
-    
+# f) Check output settings
+    if configs['output']['filename_automatic']!=True and configs['output']['filename']==None:
+        raise RuntimeError("You need to set FILENAME_AUTOMATIC to True if you don't provide an output filename.")
+    if configs['output']['output_folder']==None:
+        configs['output']['output_folder']="."  # If no output folder is given, set it to the current working directory
+        
     return configs
 

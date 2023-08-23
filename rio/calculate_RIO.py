@@ -24,8 +24,12 @@ import sys # For flushing of buffer to stdout
 ############################################
 
 sithicat= icedata.siitdthick
-siconcat= icedata.siitdconc 
-#siagecat= f.variables[siagecat_varname][:,:,:,:]      
+siconcat= icedata.siitdconc
+if configs['RIOmethod']['Lage']==True:
+    siagecat= icedata.siage
+elif configs['RIOmethod']['Lsal']==True:
+    siagecat= icedata.sisali
+    
 #salincat= f.variables[salincat_varname][:,:,:,:]   
 
 #    salMY = 5.0 # ppt
@@ -248,12 +252,12 @@ riofinal=np.ma.array(np.nan*np.zeros([siconcat.shape[0],len(shipclasses),siconca
 
 # Loop through time steps
 for jt in range(icedata[configs['coordinates']['time_name']].shape[0]):
-    print(icedata[configs['coordinates']['time_name']][jt].data)
+#    print(icedata[configs['coordinates']['time_name']][jt].data)
     #Loop through ship classes
     for shipclassnr,shipclass in enumerate(shipclasses):
-        print(shipclass)
+#        print(shipclass)
     
-        print("Calculating RIO...")
+        print("Calculating RIO for shipclass "+shipclass+' for '+str(icedata[configs['coordinates']['time_name']].data[jt]))
         sys.stdout.flush()
         cputime=time.time()
         
@@ -287,7 +291,7 @@ for jt in range(icedata[configs['coordinates']['time_name']].shape[0]):
         # Reapply mask
 #        riotoplot=np.ma.array(rionomask,mask=siconcat.mask[jt,0,:,:])
         riotoplot=rionomask
-        print(["Time to calculate RIO: ",str(time.time()-cputime)])
+        print("Calculation time: "+str(int(time.time()-cputime))+' s')
         
         riofinal[jt,shipclassnr,:,:]=riotoplot
             

@@ -20,8 +20,8 @@ variables:
    siitdconc_name:  aicen # Percentage of grid cell covered by each ice-thickness categor
    siitdthick_name:       # Actual (floe) thickness of sea ice in each category
    siitdvol_name:   vicen # Ice volume in each categroy divided by whole grid cell area
-   siage_name:            # Age of sea ice
-   sisali_name:           # Mean sea-ice salinity of all sea ice in grid cell
+   siage_name:       iage # Age of sea ice
+   sisali_name:      sice # Mean sea-ice salinity of all sea ice in grid cell
 
 # Method how RIO should be calculated
 RIOmethod:
@@ -35,7 +35,7 @@ selectdata:
 # Output
 output:
    filename_automatic: False
-   filename:      secondtest.nc      # *.nc (Only the name, not a full path)
+   filename:      test5.nc      # *.nc (Only the name, not a full path)
    output_folder: ./RIOoutput   # If different from working directory
    title:         Risk Index Outcome (RIO) calculated from DMI's HYCOM-CICE data # Given as global attribute to the RIO netcdf file
    shipclasses:
@@ -43,14 +43,14 @@ output:
            #           - PC2
            #           - PC3
            #           - PC4
-           #- PC5
+           - PC5
            #           - PC6
-           - PC7
+           #- PC7
              #           - 1ASuper
-             #           - 1A
+           - 1A
              #           - 1B
              #           - 1C
-             #           - noclass
+           - noclass
 
 #mysql:
 #    host: localhost

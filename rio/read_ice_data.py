@@ -7,7 +7,8 @@
 def read_ice_data(configs):
     import xarray as xr
     
-    icedataraw = xr.open_mfdataset(configs['ice_filename'], concat_dim=configs['coordinates']['time_name'])
+    icedataraw = xr.open_mfdataset(configs['ice_filename']) # Will try to infer automatically in which dimension (e.g. time) the files should be concatenated.
+#    icedataraw = xr.open_mfdataset(configs['ice_filename'], concat_dim=configs['coordinates']['time_name'])
       
     # Sanity checks
     ######################

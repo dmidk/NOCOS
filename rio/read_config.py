@@ -5,7 +5,7 @@ def read_configfile():
 # Open the config file
 ######################
     with open("config_RIOcalc.yml","r") as ymlfile:
-         configs = yaml.load(ymlfile)
+         configs = yaml.load(ymlfile,  Loader=yaml.Loader)
     
 # Derived setting variables and sanity checks
 ###############################################
@@ -54,6 +54,23 @@ def read_configfile():
         raise RuntimeError("If 'Lsal' is true, you need to provide 'sisali_name'.")
         
 # e) Check if ship classes make sense 
+    shipclassNUMlist=[] # Empty list to collect requested shipclasses as integer numbers
+    for shipc in configs['output']['shipclasses']:
+        if   shipc == 'PC1': shipclassNUMlist.append(1)
+        elif shipc == 'PC2': shipclassNUMlist.append(2)
+        elif shipc == 'PC3': shipclassNUMlist.append(3)
+        elif shipc == 'PC4': shipclassNUMlist.append(4)
+        elif shipc == 'PC5': shipclassNUMlist.append(5)
+        elif shipc == 'PC6': shipclassNUMlist.append(6)
+        elif shipc == 'PC7': shipclassNUMlist.append(7)
+        elif shipc == '1ASuper': shipclassNUMlist.append(10)
+        elif shipc == '1A': shipclassNUMlist.append(11)
+        elif shipc == '1B': shipclassNUMlist.append(12)
+        elif shipc == '1C': shipclassNUMlist.append(13)
+        elif shipc == 'noclass': shipclassNUMlist.append(20)
+        else: raise RuntimeError(shipc+' is not a valid shipclass. Check your config.yml file.')
+        
+    configs['output']['shipclassNUMs']=shipclassNUMlist
     
 # f) Check output settings
     if configs['output']['filename_automatic']!=True and configs['output']['filename']==None:

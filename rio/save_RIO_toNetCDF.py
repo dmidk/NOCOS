@@ -2,6 +2,7 @@
 def save_toNetcdf(riodata,icedata,configs):
 
     import xarray as xr
+    import numpy as np
     import datetime
     import os
     
@@ -18,7 +19,8 @@ def save_toNetcdf(riodata,icedata,configs):
     #rio_dims = icedata.siitdconc.dims # e.g. ('time', 'nc', 'nj', 'ni')
     rio_dims = (icedata.siitdconc.dims[0],'shipclass',icedata.siitdconc.dims[2],icedata.siitdconc.dims[3])
     
-    riods.coords["shipclass"] =  shipclasses
+    riods.coords["shipclass"] =  np.array(configs['output']['shipclassNUMs'], dtype='int32')
+#    riods.coords["shipclass"] =  shipclasses # cdo cannot handle string as coordinate
     #riods.coords["shipclass"] =  np.array(shipclasses, dtype='S') # Tried as string to help ncview to read shipclass names. Doesn't help.
     
     
@@ -40,4 +42,4 @@ def save_toNetcdf(riodata,icedata,configs):
     'references':'https://www.nautinst.org/uploads/assets/uploaded/2f01665c-04f7-4488-802552e5b5db62d9.pdf'
     }
     
-    riods.to_netcdf(outfile, unlimited_dims=configs["coordinates"]["time_name"], encoding={'time':{"dtype": "double", 'units': "days since 1900-01-01 00:00:00"}})
+    riods.to_netcdf(outfile, unlimited_dims=configs["coordinates"]["time_name"], encoding={'RIO':{'_FillValue':np.nan},'time':{"dtype": "double", 'units': "days since 1900-01-01 00:00:00"}})

@@ -12,7 +12,7 @@ def read_ice_data(configs):
       
     # Sanity checks
     ######################
-    # Check if all provided variable names actually exist in icedataraw
+    # ToDO: Check if all provided variable names actually exist in icedataraw
     # to be implemented
     
     # Check if NCAT matches to dimensions in icedataraw:

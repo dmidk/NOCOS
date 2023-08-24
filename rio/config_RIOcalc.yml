@@ -1,8 +1,8 @@
 # Name of the input file(s) containing ice information
-# You can specify one filename or a string glob in the form "path/to/my/files/*.nc" to merge multiple files in time dimension.
-#ice_filename: /home/ang/ana/rio_DMI/test/iceh_inst.2019-11-01-00000.nc
+# You can specify one filename or a string glob in the form "path/to/my/files/*.nc" to merge multiple files (e.g. along time dimension).
+ice_filename: /home/ang/ana/rio_DMI/test/iceh_inst.2019-11-01-00000.nc
 #ice_filename: /home/ang/ana/rio_DMI/test/iceh_inst.2020-04-07-00000.nc
-ice_filename: /home/ang/ana/rio_DMI/test/iceh_inst.20*.nc
+#ice_filename: /home/ang/ana/rio_DMI/test/iceh_inst.20*.nc
 
 # Information about variable oordinates
 coordinates:
@@ -25,20 +25,23 @@ variables:
 
 # Method how RIO should be calculated
 RIOmethod:
-   Lthick: True  # Calculate RIO purely based on ice thickness info
-   Lage:  False  # Calculate RIO based on ice thickness and ice age
-   Lsal:  False  # Calculate RIO based on ice thickness and salinity
+   #Lthick: True  # Calculate RIO purely based on ice thickness info
+   Lthick: False  # Calculate RIO purely based on ice thickness info
+   Lage:   True  # Calculate RIO based on ice thickness and ice age
+   #Lage:   False  # Calculate RIO based on ice thickness and ice age
+   Lsal:   False  # Calculate RIO based on ice thickness and salinity
+   #Lsal:   True  # Calculate RIO based on ice thickness and salinity
 
 # Select time or space range
-selectdata:
+selectdata: # Not implemented yet
 
 # Output
 output:
-   filename_automatic: False
-   filename:      test5.nc      # *.nc (Only the name, not a full path)
+   filename_automatic: True
+   filename:      test_Lsal.nc      # *.nc (Only the name, not a full path)
    output_folder: ./RIOoutput   # If different from working directory
    title:         Risk Index Outcome (RIO) calculated from DMI's HYCOM-CICE data # Given as global attribute to the RIO netcdf file
-   shipclasses:
+   shipclasses:  # For which shipclasses the calculation should be done (make sure indentation is correct)
            #           - PC1
            #           - PC2
            #           - PC3
@@ -47,20 +50,7 @@ output:
            #           - PC6
            #- PC7
              #           - 1ASuper
-           - 1A
+           #- 1A
              #           - 1B
              #           - 1C
-           - noclass
-
-#mysql:
-#    host: localhost
-#    user: root
-#    passwd: my secret password
-#    db: write-math
-#other:
-#    preprocessing_queue:
-#        - preprocessing.scale_and_center
-#        - preprocessing.dot_reduction
-#        - preprocessing.connect_lines
-#    use_anonymous: yes
-#
+           #- noclass

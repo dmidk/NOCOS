@@ -239,7 +239,7 @@ def calcRIO_multicat(icedata,configs):
     for jt in range(nt):
         #Loop through ship classes
         for shipclassnr,shipclass in enumerate(shipclasses):
-            print("Calculating RIO for shipclass "+shipclass+' for '+ icedata[configs['coordinates']['time_name']].data[jt].strftime("%Y-%m-%d") )
+            print("Calculating RIO for shipclass "+shipclass+' for '+ str(icedata[configs['coordinates']['time_name']].data[jt]) )
             sys.stdout.flush()
             # Start measuring calculation time
             cputime=time.time()

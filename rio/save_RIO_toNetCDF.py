@@ -39,11 +39,12 @@ def save_toNetcdf(riodata,icedata,configs):
     # Set global attributes of the netcdf file
     riods.attrs={
     'title':configs['output']['title'],
-    'histroy':'Created by .....py on '+datetime.datetime.today().strftime("%Y-%m-%d"),
+    'histroy':'Created by RIOengine_NOCOS.py on '+datetime.datetime.today().strftime("%Y-%m-%d"),
     'description':'Used RIO calculation method: '+riomethod+'; number of ice categories: '+str(configs['coordinates']['ncat']),
-    'institution':"Finnish and Danish Meteorological Institutes, FMI/DMI",
+    'institution':"Danish and Finnish Meteorological Institutes, DMI/FMI",
     'references':'https://www.nautinst.org/uploads/assets/uploaded/2f01665c-04f7-4488-802552e5b5db62d9.pdf'
     }
     
     # Write netcdf file
     riods.to_netcdf(outfile, unlimited_dims=configs["coordinates"]["time_name"], encoding={'RIO':{'_FillValue':np.nan},'time':{"dtype": "double", 'units': "days since 1900-01-01 00:00:00"}})
+    print("RIO output written to: "+outfile)

@@ -1,0 +1,32 @@
+# Name of the input file(s) containing ice information
+# path and file name bases is needed. The "ice_filename" is the base of the input files begore the date
+ice_filename: iceh_inst. #file name of files in "path" 
+path: /data/users/imksie/NOCOS/landfast/datadir/
+# Information about variable oordinates
+coordinates:
+   time_name: time   # Name of time dimension
+   lat_name: TLAT     # Name of latitude field (only for plotting)
+   lon_name: TLON     # Name of longitude field (only for plotting)
+
+# Which (relevant) variables are contained in your file?
+variables:
+   siu_name: uvel      # sea ice velocity x componant
+   siv_name: vvel      # sea ice velocity y componant
+   siconc_name:  aice # Percentage of grid cell covered by each ice-thickness categor
+
+# Select time or space range
+selectdata: # Not implemented yet
+   Dformat: "%Y-%m-%d" #format of date in filename for ex.: "%Y%m%d" for 20030101, or "%Y-%m-%d" for 2003-01-01
+   end_year: 2022 #enddate needs to be in the formate the date is given in filename
+   end_month: 12 #enddate needs to be in the formate the date is given in filename
+   end_day: 15 #enddate needs to be in the formate the date is given in filename
+   start_year: 2022 #startdate needs to be in the formate the date is given in filename
+   start_month: 1
+   start_day: 1
+   freuqancy: 1 #frequancy at which the output should be computed in days
+# Output
+output:
+   filename_automatic: True
+   filename:      LFoutupt.nc      # *.nc (Only the name, not a full path)
+   output_folder: ./outputLF/     # If different from working directory
+   title:         land fast ice calculated from .... data # Given as global attribute to the RIO netcdf file

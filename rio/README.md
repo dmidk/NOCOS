@@ -18,14 +18,14 @@ Running
 Info
 #############
 
-We use variable names as defined by CMIP6/CMOR:
-siconc
-sithick
-sivol
-siitdconc
-siitdthick
-siage
-sisali
+We use variable names as defined by CMIP6/CMOR (https://clipc-services.ceda.ac.uk/dreq/u/MIPtable::SImon.html, from here: https://clipc-services.ceda.ac.uk/dreq/index/miptable.html) :
+- siconc
+- sithick
+- sivol
+- siitdconc
+- siitdthick
+- siage
+- sisali
 (See explanations in config_RIOcalc_default.yml)
 
 

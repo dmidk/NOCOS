@@ -1,0 +1,49 @@
+# Name of the input file(s) containing ice information
+# You can specify one filename or a string glob in the form "path/to/my/files/*.nc" to merge multiple files (e.g. along time dimension).
+ice_filename: "/home/ilja/hpcshare/nemo_est/out_ice/N_run7_ice.selgor.mergetime*.nc" 
+
+# Information about variable oordinates
+coordinates:
+   ncat: 15          # Number of ice thickness categories
+   ncatnl: 5          # Number of ice thickness categories   
+   ncat_name: ncatice     # Name of ncat dimension (if ncat > 1)
+   time_name: time_counter   # Name of time dimension
+   lat_name: x    # Name of latitude field (only for plotting)
+   lon_name: y    # Name of longitude field (only for plotting)
+
+# Which (relevant) variables are contained in your file?
+variables:
+   siconc_name:  icefrac         # Percentage of grid cell covered by sea ice
+   sithick_name: icethic         # Actual (floe) thickness of sea ice (not volume)
+   sivol_name:            # Total volume of sea ice divided by grid-cell area
+   siitdconc_name:  iceconc_cat # Percentage of grid cell covered by each ice-thickness categor
+   siitdthick_name: icethic_cat      # Actual (floe) thickness of sea ice in each category
+   siitdvol_name:    # Ice volume in each categroy divided by whole grid cell area
+   siage_name:        # Age of sea ice
+   sisali_name:       # Mean sea-ice salinity of all sea ice in grid cell
+
+# Method how RIDGING should be calculated
+RIDGE_method:
+   Lthickconc: True  # Calculate RIDGING purely based on ice thickness info
+   Ldthick:   False  # Calculate RIDGING based on ice thickness  difference
+   Ldproc:   False  # Calculate RIDGING based on RIDGING auxilary parameters
+
+# Select time or space range
+sel: # Not implemented yet
+   t1: 2011-01-01 
+   t2: 2011-04-01
+   x1: 1
+   x2: 151
+   y1: 1
+   y2: 181
+#   x1: 2
+#   x2: 80
+#   y1: 30
+#   y2: 120
+
+# Output
+output:
+   filename_automatic: True
+   filename:       test_output_rid     # *.nc (Only the name, not a full path)
+   output_folder: .   # If different from working directory
+   title:         Ridging Index Outcome (Ridging) calculated from  XX # Given as global attribute to the RIO netcdf file
